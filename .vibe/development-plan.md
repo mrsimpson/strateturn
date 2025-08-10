@@ -148,10 +148,32 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 - P2P-Synchronisation → Netzwerk-Failure-Simulation und Recovery-Tests
 
 ### Tasks
-- [ ] *To be added when this phase becomes active*
+
+**Phase 1: Foundation + Test Setup (Woche 1-2)**
+- [x] Frontend-Projekt initialisieren (Vite + Vue 3 + TypeScript + Vitest)
+- [x] Backend-Projekt initialisieren (Node.js + Express + Vitest)
+- [x] Grundlegende UI-Komponenten erstellen (Button, Modal, LoadingSpinner)
+- [x] Test-Setup konfigurieren und erste Tests schreiben
+- [ ] CI/CD-Pipeline einrichten
+- [x] Projekt-Struktur und Coding-Standards etablieren
+
+**Phase 2: Core Game Logic (Woche 3-4)**
+- [ ] Game State Management implementieren
+- [ ] Movement System mit Validierung
+- [ ] Combat System mit Stratego-Regeln
+- [ ] Game Setup und Turn Management
+- [ ] Umfassende Tests für alle Game Logic
+
+**Phase 3-7: Weitere Phasen**
+- [ ] *Werden nach Abschluss der aktuellen Phase hinzugefügt*
 
 ### Completed
-*None yet*
+- [x] Frontend-Projekt erfolgreich initialisiert mit Vue 3 + Vite + TypeScript + Vitest
+- [x] Backend-Server läuft mit Express + WebSocket + Health-Check-Endpoint
+- [x] Button-Komponente mit umfassenden Tests (6/6 Tests bestehen)
+- [x] GameView und HomeView mit Navigation implementiert
+- [x] Grundlegende UI mit Tailwind CSS und responsivem Design
+- [x] Test-Setup funktioniert für Frontend und Backend
 
 ## Document
 

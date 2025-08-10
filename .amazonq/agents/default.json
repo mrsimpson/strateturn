@@ -6,7 +6,7 @@
     "responsible-vibe-mcp": {
       "command": "node",
       "args": [
-        "dist/index.js"
+        "/Users/oliverjaegle/projects/privat/mcp-server/responsible-vibe/dist/index.js"
       ]
     },
     "playwright": {

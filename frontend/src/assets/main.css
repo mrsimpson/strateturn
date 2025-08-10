@@ -1,0 +1,11 @@
+@import './base.css';
+
+/* Application-specific styles */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Ensure full height for app container */
+#app {
+  min-height: 100vh;
+}

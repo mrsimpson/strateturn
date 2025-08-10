@@ -1,0 +1,30 @@
+{
+  "name": "strateturn-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:run": "vitest --run"
+  },
+  "keywords": ["stratego", "p2p", "webrtc", "game"],
+  "author": "",
+  "license": "ISC",
+  "description": "Backend server for Strateturn P2P game signaling",
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "express": "^4.21.1",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.9.0",
+    "@types/ws": "^8.5.13",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^3.2.4"
+  }
+}
