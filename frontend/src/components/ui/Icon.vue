@@ -30,3 +30,9 @@ const classes = computed(() => {
   const baseClasses = 'inline-block'
   return [baseClasses, props.class].filter(Boolean).join(' ')
 })</script>
+
+<script lang="ts">
+export default {
+  name: 'BaseIcon'
+}
+</script>

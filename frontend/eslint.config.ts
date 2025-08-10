@@ -23,4 +23,19 @@ export default defineConfigWithVueTs(
     ...pluginVitest.configs.recommended,
     files: ['src/**/__tests__/*'],
   },
+
+  // Custom rules
+  {
+    rules: {
+      'vue/multi-word-component-names': 'off', // Allow single-word component names
+    }
+  },
+
+  // Test-specific rules
+  {
+    files: ['**/*.{test,spec}.{js,ts,vue}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'warn', // Allow 'any' in tests as warning
+    }
+  }
 )

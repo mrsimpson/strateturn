@@ -60,4 +60,11 @@ const handleClick = (event: MouseEvent) => {
   if (!props.disabled) {
     emit('click', event)
   }
-}</script>
+}
+</script>
+
+<script lang="ts">
+export default {
+  name: 'BaseButton'
+}
+</script>

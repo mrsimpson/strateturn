@@ -138,6 +138,7 @@ const connectionStatusText = computed(() => {
     case 'connected': return 'Connected to peer'
     case 'connecting': return 'Connecting...'
     case 'disconnected': return 'Not connected'
+    default: return 'Unknown status'
   }
 })
 

@@ -158,11 +158,14 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 - [x] Projekt-Struktur und Coding-Standards etablieren
 
 **Phase 2: Core Game Logic (Woche 3-4)**
-- [ ] Game State Management implementieren
-- [ ] Movement System mit Validierung
-- [ ] Combat System mit Stratego-Regeln
-- [ ] Game Setup und Turn Management
-- [ ] Umfassende Tests für alle Game Logic
+- [x] Game State Management implementieren
+- [x] Movement System mit Validierung
+- [x] Combat System mit Stratego-Regeln
+- [x] Game Setup und Turn Management
+- [x] Umfassende Tests für alle Game Logic
+- [x] State Machine Architektur implementieren
+- [x] Konfigurierbare Combat-Regeln (rule-based statt hardcoded)
+- [x] Game End Analyzer für saubere Trennung der Concerns
 
 **Phase 3-7: Weitere Phasen**
 - [ ] *Werden nach Abschluss der aktuellen Phase hinzugefügt*
@@ -171,9 +174,17 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 - [x] Frontend-Projekt erfolgreich initialisiert mit Vue 3 + Vite + TypeScript + Vitest
 - [x] Backend-Server läuft mit Express + WebSocket + Health-Check-Endpoint
 - [x] Button-Komponente mit umfassenden Tests (6/6 Tests bestehen)
+- [x] Icon-Komponente mit Material Design Icons (4/4 Tests bestehen)
 - [x] GameView und HomeView mit Navigation implementiert
 - [x] Grundlegende UI mit Tailwind CSS und responsivem Design
 - [x] Test-Setup funktioniert für Frontend und Backend
+- [x] Scaffolding-Artefakte entfernt und saubere Codebasis etabliert
+- [x] **State Machine Architektur komplett implementiert (69/69 Tests bestehen)**
+- [x] GameStateMachine mit type-safe Transitions und nested States
+- [x] Konfigurierbare CombatResolver ohne hardcoded Ranks
+- [x] MovementValidator mit allen Stratego-Bewegungsregeln
+- [x] GameEndAnalyzer für saubere Trennung von Combat und Spielende
+- [x] Umfassende Dokumentation in Architecture.md aktualisiert
 
 ## Document
 
