@@ -26,27 +26,60 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 ## Architecture
 
 ### Phase Entrance Criteria:
-- [ ] Die Anforderungen wurden gründlich definiert
-- [ ] Alternativen wurden evaluiert und dokumentiert
-- [ ] Es ist klar, was im Scope und außerhalb des Scopes liegt
-- [ ] Ein vollständiges PRD wurde erstellt
+- [x] Die Anforderungen wurden gründlich definiert
+- [x] Alternativen wurden evaluiert und dokumentiert
+- [x] Es ist klar, was im Scope und außerhalb des Scopes liegt
+- [x] Ein vollständiges PRD wurde erstellt
 
 ### Tasks
-- [ ] *To be added when this phase becomes active*
+- [x] Frontend-Framework auswählen (Vue 3 mit Pinia)
+- [x] Git-Library für Browser evaluieren (isomorphic-git)
+- [x] WebRTC-Implementation definieren (simple-peer)
+- [x] YAML-Parser auswählen (js-yaml)
+- [x] Signaling-Mechanismus definieren (minimaler Server)
+- [x] State-Management-Architektur entwerfen (URL-basiert + minimale Stores)
+- [x] Component-Struktur und UI-Architektur planen (Views + granulare Components)
+- [x] P2P-Protokoll und Signaling-Mechanismus detaillieren
+- [x] Backend-Architektur für Signaling und Konfigurationen planen
+- [x] Persistierung-Strategie (IndexedDB + SQLite/Turso) festlegen
+- [x] Build-System und Deployment-Strategie wählen
+- [x] Architektur-Dokument erstellen
 
 ### Completed
-*None yet*
+- [x] Frontend-Framework: Vue 3 mit Pinia für State-Management
+- [x] Git-Library: isomorphic-git für browser-basierte Git-Operationen
+- [x] WebRTC-Library: simple-peer für vereinfachte P2P-Verbindungen
+- [x] YAML-Parser: js-yaml für Konfigurationsparsing
+- [x] Signaling-Ansatz: Minimaler Server für WebRTC-Handshake
+- [x] State-Architektur: URL-basierter State + Pinia Stores (config, connection, game UI)
+- [x] Component-Struktur: Views für Routes + granulare Single-Responsibility Components
+- [x] P2P-Protokoll: Git-basierte Commit-per-Move Synchronisation
+- [x] Backend-Architektur: Node.js + Express + Turso für Signaling
+- [x] Persistierung: IndexedDB für Git-Repos, localStorage für UI, URL für State
+- [x] Build-System: Vite + TypeScript, Vercel/Netlify + Fly.io Deployment
+- [x] Umfassendes Architektur-Dokument mit Mermaid-Diagrammen erstellt
 
 ## Plan
 
 ### Phase Entrance Criteria:
-- [ ] Die technische Architektur wurde vollständig definiert
-- [ ] Tech-Stack-Entscheidungen wurden getroffen und dokumentiert
-- [ ] Architekturmuster wurden festgelegt
-- [ ] Nicht-funktionale Anforderungen wurden berücksichtigt
+- [x] Die technische Architektur wurde vollständig definiert
+- [x] Tech-Stack-Entscheidungen wurden getroffen und dokumentiert
+- [x] Architekturmuster wurden festgelegt
+- [x] Nicht-funktionale Anforderungen wurden berücksichtigt
 
 ### Tasks
-- [ ] *To be added when this phase becomes active*
+- [ ] Implementierungsreihenfolge und Meilensteine definieren
+- [ ] Frontend-Projekt-Setup planen (Vite, Vue 3, TypeScript)
+- [ ] Backend-Projekt-Setup planen (Node.js, Express, WebSocket)
+- [ ] Core-Module und deren Abhängigkeiten identifizieren
+- [ ] YAML-Konfigurationssystem Implementierungsplan
+- [ ] Git-basierte P2P-Synchronisation Implementierungsplan
+- [ ] WebRTC-Verbindungsmanagement Implementierungsplan
+- [ ] UI-Komponenten und Views Implementierungsplan
+- [ ] Testing-Strategie definieren
+- [ ] Deployment-Pipeline planen
+- [ ] Risiken und Mitigation-Strategien identifizieren
+- [ ] Detaillierte Code-Tasks für Implementation erstellen
 
 ### Completed
 *None yet*
@@ -102,6 +135,15 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 - **Spielende**: Nur "Capture the Flag", Unentschieden und Aufgabe möglich
 - **Züge-Validierung**: System verhindert ungültige Züge komplett
 - **Timeouts**: Keine - Spieler regeln außerhalb der Plattform
+- **Frontend-Framework**: Vue 3 mit Pinia für State-Management
+- **Git-Library**: isomorphic-git für browser-basierte Git-Operationen (~200KB)
+- **WebRTC-Library**: simple-peer für vereinfachte P2P-Verbindungen (~25KB)
+- **YAML-Parser**: js-yaml für Konfigurationsparsing (~45KB)
+- **Signaling**: Minimaler Server für WebRTC-Handshake
+- **Backend**: Node.js + Express + SQLite/Turso
+- **State-Management**: URL-basierter State + Pinia Stores (config, connection, game UI)
+- **Component-Architektur**: Views für Routes + granulare Single-Responsibility Components
+- **Backend-DB**: SQLite/Turso für Konfigurationsspeicherung (zukünftig)
 - **Out of Scope v1**: Nutzer-Konfiguration, grafischer Editor, KI, Turniere, Tutorials, Chat
 
 ## Notes
@@ -109,7 +151,7 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 
 **Vision**: Ein konfigurierbares, browser-basiertes Strategiespiel, das Familien, Freunden und Lehrern ermöglicht, thematische Varianten von Stratego-ähnlichen Spielen zu spielen.
 
-**Zielgruppe**: 
+**Zielgruppe**:
 - Primär: Familien/Freunde für gemeinsame Spielzeit
 - Sekundär: Lehrer/Schüler für thematische Lernspiele
 - Nicht: Militär-/Stratego-Enthusiasten
@@ -150,10 +192,10 @@ game:
   board:
     width: 10
     height: 10
-    obstacles: 
+    obstacles:
       - {x: 2, y: 4, width: 2, height: 2, type: "lake"}
       - {x: 6, y: 4, width: 2, height: 2, type: "lake"}
-  
+
   players:
     - name: "Rot"
       pieces:
@@ -162,7 +204,7 @@ game:
         - rank: 2, name: "Aufklärer", count: 8, movement: "unlimited"
         - rank: 0, name: "Bombe", count: 6, movement: 0
         - rank: -1, name: "Fahne", count: 1, movement: 0
-    - name: "Blau" 
+    - name: "Blau"
       pieces:
         - rank: 10, name: "Marschall", count: 1, movement: 1
         # ... (gleiche Struktur)
