@@ -167,7 +167,29 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 - [x] Konfigurierbare Combat-Regeln (rule-based statt hardcoded)
 - [x] Game End Analyzer für saubere Trennung der Concerns
 
-**Phase 3-7: Weitere Phasen**
+**Phase 3: Git-based P2P Synchronization (Woche 5-6)**
+- [x] isomorphic-git Integration und Repository-Management (REQ-GIT001-007)
+- [x] GitSyncManager für State Machine Integration
+- [x] WebRTC P2P Communication Setup (REQ-P2P001-005)
+- [x] P2PConnection mit Message Validation und Queuing
+- [x] Connection Management und Room-System (REQ-CONN001-005)
+- [x] ConnectionCoordinator für End-to-End Integration
+- [ ] End-to-End P2P Game Synchronization Tests (Browser-only)
+
+**Phase 4: UI Integration & Game Board (Woche 7-8)**
+- [x] GameBoard Component mit Click-to-select (Mobile-friendly)
+- [x] BoardCell Component mit Visual Feedback
+- [x] GamePiece Component mit Player Colors und Symbols
+- [x] Valid Move Highlighting und Selection States
+- [x] **Konfigurierbare Board- und Piece-Darstellung** (BoardConfig, PieceConfig)
+- [x] **Obstacle-System** (Lakes, Mountains, Walls etc.)
+- [x] **Player-Zone-System** (dynamische Setup-Bereiche)
+- [x] **Beispiel-Konfigurationen** (Classic Stratego, Mini, Chess-like)
+- [ ] State Machine Integration in Vue Components
+- [ ] Setup Phase UI für Piece-Platzierung
+- [ ] Visual Feedback für Combat und Game Events
+
+**Phase 5-7: Weitere Phasen**
 - [ ] *Werden nach Abschluss der aktuellen Phase hinzugefügt*
 
 ### Completed
