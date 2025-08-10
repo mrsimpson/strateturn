@@ -68,29 +68,84 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 - [x] Nicht-funktionale Anforderungen wurden berücksichtigt
 
 ### Tasks
-- [ ] Implementierungsreihenfolge und Meilensteine definieren
-- [ ] Frontend-Projekt-Setup planen (Vite, Vue 3, TypeScript)
-- [ ] Backend-Projekt-Setup planen (Node.js, Express, WebSocket)
-- [ ] Core-Module und deren Abhängigkeiten identifizieren
-- [ ] YAML-Konfigurationssystem Implementierungsplan
-- [ ] Git-basierte P2P-Synchronisation Implementierungsplan
-- [ ] WebRTC-Verbindungsmanagement Implementierungsplan
-- [ ] UI-Komponenten und Views Implementierungsplan
-- [ ] Testing-Strategie definieren
-- [ ] Deployment-Pipeline planen
-- [ ] Risiken und Mitigation-Strategien identifizieren
-- [ ] Detaillierte Code-Tasks für Implementation erstellen
+- [x] Implementierungsreihenfolge und Meilensteine definieren
+- [x] Frontend-Projekt-Setup planen (Vite, Vue 3, TypeScript, Vitest)
+- [x] Backend-Projekt-Setup planen (Node.js, Express, WebSocket, Vitest)
+- [x] Test-Setup und Testing-Strategie definieren
+- [x] Core-Game-Logic mit hardcoded Stratego-Regeln planen
+- [x] Git-basierte P2P-Synchronisation Implementierungsplan
+- [x] WebRTC-Verbindungsmanagement Implementierungsplan
+- [x] UI-Komponenten und Views Implementierungsplan
+- [x] YAML-Konfigurationssystem für später vorbereiten (Architektur)
+- [x] Deployment-Pipeline planen
+- [x] Risiken und Mitigation-Strategien identifizieren
+- [x] Detaillierte Code-Tasks für Implementation erstellen
 
 ### Completed
-*None yet*
+- [x] Implementierungsstrategie überarbeitet: Configuration später, Tests von Anfang an
+- [x] Umfassender Implementierungsplan mit EARS-Notation erstellt (docs/IMPLEMENTATION_PLAN.md)
+- [x] 7-Phasen-Strategie: Foundation → Core Logic → Git P2P → WebRTC → UI → Integration → YAML
+- [x] Vitest als einheitliches Testing-Framework für Frontend und Backend
+- [x] Test-unterstützte Entwicklung mit 80%+ Coverage-Ziel
+- [x] Hardcoded Stratego-Regeln mit konfigurierbarer Architektur
 
 ## Code
 
 ### Phase Entrance Criteria:
-- [ ] Ein detaillierter Implementierungsplan wurde erstellt
-- [ ] Aufgaben wurden in spezifische, umsetzbare Schritte unterteilt
-- [ ] Abhängigkeiten und Risiken wurden identifiziert
-- [ ] Die Implementierungsreihenfolge wurde festgelegt
+- [x] Ein detaillierter Implementierungsplan wurde erstellt
+- [x] Aufgaben wurden in spezifische, umsetzbare Schritte unterteilt
+- [x] Abhängigkeiten und Risiken wurden identifiziert
+- [x] Die Implementierungsreihenfolge wurde festgelegt
+
+### Implementation Strategy
+
+**Business Requirements**: Siehe **docs/REQUIREMENTS.md** für vollständige EARS-Notation der fachlichen Anforderungen
+
+**7-Phasen-Implementierung**:
+1. **Foundation + Test Setup** (Woche 1-2) - Vite, Vue 3, TypeScript, Vitest für Frontend & Backend
+2. **Core Game Logic** (Woche 3-4) - Hardcoded Stratego-Regeln mit konfigurierbarer Architektur
+3. **Git-based P2P Synchronization** (Woche 5-6) - isomorphic-git + Commit-per-Move
+4. **WebRTC Connection Management** (Woche 7-8) - simple-peer + Signaling-Server
+5. **User Interface** (Woche 9-10) - Vue 3 Components + Click-to-Select/Move
+6. **Integration & Testing** (Woche 11-12) - E2E mit Playwright + Performance-Tests
+7. **YAML Configuration System** (Woche 13-14) - Migration zu konfigurierbaren Regeln
+
+### Development Conventions
+
+**Testing Strategy**:
+- **Framework**: Vitest für Frontend und Backend (einheitlich)
+- **Coverage**: 90% für Business Logic, 80% für UI Components
+- **Test Types**: Unit (Vitest) → Integration (Vitest) → E2E (Playwright)
+- **Mocking**: WebRTC, Git-Operationen, externe APIs
+
+**Code Organization**:
+- **Hardcoded-First**: Stratego-Regeln initial hardcoded, aber konfigurierbar architektiert
+- **Single Responsibility**: Ein Concern pro Datei/Komponente
+- **Immutable State**: Unveränderliche State-Objekte für Vorhersagbarkeit
+- **URL-based State**: Spielstand über URL transportieren für Shareability
+
+**Git Workflow**:
+- **Conventional Commits**: feat/fix/docs/test/refactor für automatisches Versioning
+- **Feature Branches**: Kurze Feature-Branches mit schnellem Merge
+- **Test-First**: Tests vor oder parallel zur Implementation
+
+**Performance Targets**:
+- **Bundle Size**: <500KB total (Vue 3 + Libraries)
+- **Load Time**: <3 Sekunden auf Standard-Breitband
+- **Interaction**: <100ms für lokale Aktionen
+- **Git Performance**: Bis 1000 Commits ohne Degradation
+
+### Risk Mitigation
+
+**Business Logic Risks**:
+- Komplexe Kampfregeln → Umfassende Test-Coverage für alle Spezialfälle
+- State-Synchronisation → Extensive Conflict-Resolution-Tests
+- Spielbalance → Validierung gegen Standard-Stratego-Regeln
+
+**Technical Risks**:
+- isomorphic-git Performance → Frühe Benchmarks mit großen Commit-Historien
+- WebRTC Browser-Kompatibilität → Cross-Browser-Tests (Chrome, Firefox, Safari, Edge)
+- P2P-Synchronisation → Netzwerk-Failure-Simulation und Recovery-Tests
 
 ### Tasks
 - [ ] *To be added when this phase becomes active*
@@ -143,10 +198,25 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 - **Backend**: Node.js + Express + SQLite/Turso
 - **State-Management**: URL-basierter State + Pinia Stores (config, connection, game UI)
 - **Component-Architektur**: Views für Routes + granulare Single-Responsibility Components
+- **Implementierungsstrategie**: Hardcoded Stratego-Regeln zuerst, YAML-Konfiguration später
+- **Testing-Ansatz**: Test-unterstützte Entwicklung von Anfang an (Vitest, Jest)
 - **Backend-DB**: SQLite/Turso für Konfigurationsspeicherung (zukünftig)
 - **Out of Scope v1**: Nutzer-Konfiguration, grafischer Editor, KI, Turniere, Tutorials, Chat
 
 ## Notes
+### Business Requirements
+Siehe **docs/REQUIREMENTS.md** für vollständige fachliche Anforderungen mit EARS-Notation:
+- Game State Management (REQ-G001-G006)
+- Movement System (REQ-M001-M008) 
+- Combat System (REQ-C001-C009)
+- Game Setup Rules (REQ-S001-S007)
+- Turn Management (REQ-T001-T006)
+- Git-based Synchronization (REQ-GIT001-GIT007)
+- P2P Communication (REQ-P2P001-P2P005)
+- Connection Management (REQ-CONN001-CONN006)
+- User Interface Logic (REQ-UI001-UI007)
+- Configuration Migration (REQ-YAML001-YAML005)
+
 ### Product Requirements Document (PRD)
 
 **Vision**: Ein konfigurierbares, browser-basiertes Strategiespiel, das Familien, Freunden und Lehrern ermöglicht, thematische Varianten von Stratego-ähnlichen Spielen zu spielen.
