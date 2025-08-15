@@ -510,14 +510,26 @@ onUnmounted(() => {
 })
 
 const initializeMultiplayer = async () => {
+  console.log('=== INITIALIZING MULTIPLAYER ===')
+  console.log('Room ID:', roomId.value)
+  console.log('Local player role:', localPlayerRole.value)
+  
   try {
+    console.log('Connecting to WebSocket...')
     await multiplayerStore.connect()
+    console.log('WebSocket connected successfully')
+    
     if (roomId.value) {
+      console.log('Joining room:', roomId.value)
       multiplayerStore.joinRoom(roomId.value)
+      console.log('Room join request sent')
+    } else {
+      console.warn('No room ID available for joining')
     }
   } catch (error) {
     console.error('Failed to initialize multiplayer:', error)
   }
+  console.log('=== END MULTIPLAYER INITIALIZATION ===')
 }
 
 const setupGameStateListener = () => {
@@ -526,14 +538,21 @@ const setupGameStateListener = () => {
 
 const handleGameStateSync = (event: any) => {
   const syncedState = event.detail
+  console.log('=== GAME STATE SYNC DEBUG ===')
   console.log('Syncing game state from other player:', syncedState)
+  console.log('Current local state before sync:', gameState.value)
+  console.log('Local player role:', localPlayerRole.value)
   
   // Update local game state
   gameState.value = { ...syncedState }
   
-  // Note: We don't need to update the state machine directly since
-  // the gameState reactive ref will trigger UI updates automatically.
-  // The state machine is primarily for local event processing.
+  // CRITICAL FIX: Update the state machine's internal state as well
+  if (stateMachine.value) {
+    stateMachine.value.setState(syncedState)
+  }
+  
+  console.log('Local state after sync:', gameState.value)
+  console.log('=== END GAME STATE SYNC DEBUG ===')
 }
 
 const initializePlayer = () => {

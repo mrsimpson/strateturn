@@ -59,6 +59,13 @@ export class GameStateMachine {
   }
 
   /**
+   * Set state (for syncing from external sources like WebSocket)
+   */
+  setState(newState: GameState): void {
+    this.currentState = { ...newState }
+  }
+
+  /**
    * Get current context
    */
   getContext(): Readonly<GameContext> {

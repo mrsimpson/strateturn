@@ -229,6 +229,22 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
     - [x] Added check to prevent starting countdown if already running
     - [x] Resolved WebSocket sync appearing broken (was actually working)
     - [x] Fixed multiple END_TURN events being sent simultaneously
+  - [x] **CRITICAL FIX: State machine sync issue**
+    - [x] Identified disconnect between reactive gameState and state machine internal state
+    - [x] Added setState method to GameStateMachine for external state updates
+    - [x] Fixed handleGameStateSync to update both gameState and state machine
+    - [x] Resolved blue player being stuck in setup phase while UI showed playing phase
+    - [x] WebSocket sync now properly updates state machine for event processing
+  - [x] **MILESTONE: Complete move round-trip working!** ✅
+    - [x] Red player can select pieces and make moves
+    - [x] Turn confirmation system works without duplicates
+    - [x] Blue player receives state updates correctly
+    - [x] Blue player can make moves when it's their turn
+    - [x] State transitions work properly between players
+  - [ ] **NEXT: Combat resolution system**
+    - [ ] Issue: Game gets stuck in combat_resolution state when piece moves onto another
+    - [ ] Need to implement combat resolution logic and UI
+    - [ ] Handle piece capture and combat outcomes
   - [ ] Implement turn cancellation logic (revert move, return to piece_selected)
   - [ ] Integrate combat resolution for piece attacks
 - [ ] Visual Feedback für Combat und Game Events
