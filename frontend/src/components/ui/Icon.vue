@@ -29,7 +29,8 @@ const iconPath = computed(() => props.icon)
 const classes = computed(() => {
   const baseClasses = 'inline-block'
   return [baseClasses, props.class].filter(Boolean).join(' ')
-})</script>
+})
+</script>
 
 <script lang="ts">
 export default {

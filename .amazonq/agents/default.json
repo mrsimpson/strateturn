@@ -40,14 +40,18 @@
     "@responsible-vibe-mcp",
     "@playwright",
     "@modelcontextprotocol Docs",
-    "@typescript-sdk Docs"
+    "@typescript-sdk Docs",
+    "codeReview",
+    "displayFindings"
   ],
   "allowedTools": [
     "fsRead",
     "fsWrite",
     "fsReplace",
     "listDirectory",
-    "fileSearch"
+    "fileSearch",
+    "codeReview",
+    "displayFindings"
   ],
   "toolsSettings": {
     "execute_bash": {

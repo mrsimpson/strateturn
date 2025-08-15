@@ -17,6 +17,9 @@
         :is-valid-move="isValidMove(cell)"
         :is-highlighted="isHighlighted(cell)"
         :board-config="boardConfig"
+        :piece-config="pieceConfig"
+        :current-player="currentPlayer"
+        :game-phase="gameState.phase"
         @click="handleCellClick(cell)"
       />
     </div>
@@ -83,9 +86,21 @@ interface BoardConfig {
   }>
 }
 
+interface PieceConfig {
+  symbols: Record<string, string>
+  types: Array<{
+    name: string
+    rank: number
+    count: number
+    movement: number | 'unlimited'
+  }>
+}
+
 interface Props {
   gameState: StateMachineState
   boardConfig: BoardConfig
+  pieceConfig: PieceConfig
+  localPlayerRole: string
   onPieceSelect?: (piece: Piece, position: Position) => void
   onPieceMove?: (from: Position, to: Position, piece: Piece) => void
   onPieceDeselect?: () => void
@@ -96,6 +111,8 @@ const emit = defineEmits<{
   pieceSelect: [piece: Piece, position: Position]
   pieceMove: [from: Position, to: Position, piece: Piece]
   pieceDeselect: []
+  cellClick: [position: Position]
+  pieceReturn: [piece: Piece, position: Position]
 }>()
 
 // Reactive state
@@ -157,41 +174,83 @@ const handleCellClick = (cell: Position & { piece: Piece | null }) => {
   const { x, y, piece } = cell
   const position = { x, y }
 
+  console.log('=== GAMEBOARD CELL CLICK ===')
+  console.log('Cell clicked:', position, 'piece:', piece?.name || 'none')
+  console.log('Game phase:', props.gameState.phase)
+  console.log('Is obstacle:', isObstacle(position))
+
   // Check if cell is obstacle
   if (isObstacle(position)) {
+    console.log('Click blocked: obstacle')
     return // Can't interact with obstacles
   }
 
-  // If there's a selected piece and this is a valid move
-  if (selectedPiece.value && selectedPosition.value && isValidMove(position)) {
-    // Execute move
-    emit('pieceMove', selectedPosition.value, position, selectedPiece.value)
-    deselectPiece()
+  // Always emit cell click for setup phase
+  console.log('Emitting cellClick event to GameView')
+  emit('cellClick', position)
+
+  // Setup phase: Handle piece return to palette
+  if (props.gameState.phase === 'setup' && piece) {
+    console.log('Setup phase: piece clicked, emitting piece return')
+    emit('pieceReturn', piece, position)
     return
   }
 
-  // If clicking on a piece
-  if (piece) {
-    // If it's the same piece, deselect
-    if (selectedPiece.value && 
-        selectedPiece.value.id === piece.id && 
-        selectedPosition.value?.x === x && 
-        selectedPosition.value?.y === y) {
+  // Playing phase: Handle piece selection and movement
+  if (props.gameState.phase === 'playing') {
+    // If there's a selected piece and this is a valid move
+    if (selectedPiece.value && selectedPosition.value && isValidMove(position)) {
+      console.log('Valid move detected, emitting pieceMove')
+      // Execute move
+      emit('pieceMove', selectedPosition.value, position, selectedPiece.value)
       deselectPiece()
       return
     }
 
-    // Select new piece
-    selectPiece(piece, position)
-  } else {
-    // Clicking on empty cell - deselect if no valid move
-    if (!isValidMove(position)) {
-      deselectPiece()
+    // If clicking on a piece
+    if (piece) {
+      console.log('Piece clicked, checking selection logic')
+      // If it's the same piece, deselect
+      if (selectedPiece.value && 
+          selectedPiece.value.id === piece.id && 
+          selectedPosition.value?.x === x && 
+          selectedPosition.value?.y === y) {
+        console.log('Same piece clicked, deselecting')
+        deselectPiece()
+        return
+      }
+
+      // Select new piece
+      console.log('Selecting new piece')
+      selectPiece(piece, position)
+    } else {
+      // Clicking on empty cell - deselect if no valid move
+      if (!isValidMove(position)) {
+        console.log('Empty cell clicked, deselecting')
+        deselectPiece()
+      }
     }
   }
+  
+  console.log('=== END GAMEBOARD CELL CLICK ===')
 }
 
 const selectPiece = (piece: Piece, position: Position) => {
+  // During playing phase, only allow selecting pieces when it's the local player's turn
+  if (props.gameState.phase === 'playing') {
+    const currentPlayer = props.gameState.subState?.currentPlayer
+    if (currentPlayer !== props.localPlayerRole) {
+      console.log(`Not your turn! Current player: ${currentPlayer}, Your role: ${props.localPlayerRole}`)
+      return
+    }
+    
+    // Only allow selecting own pieces
+    if (piece.player !== props.localPlayerRole) {
+      console.log(`Cannot select opponent's piece! Piece player: ${piece.player}, Your role: ${props.localPlayerRole}`)
+      return
+    }
+  }
+  
   selectedPiece.value = piece
   selectedPosition.value = position
   
@@ -236,6 +295,11 @@ const isObstacle = (position: Position): boolean => {
 }
 
 const calculateValidMoves = (piece: Piece, from: Position): Position[] => {
+  // No valid moves during setup phase
+  if (props.gameState.phase === 'setup') {
+    return []
+  }
+  
   const moves: Position[] = []
   
   if (piece.movement === 0) {
@@ -256,9 +320,15 @@ const calculateValidMoves = (piece: Piece, from: Position): Position[] => {
       const newY = from.y + dir.dy
       const newPos = { x: newX, y: newY }
       
+      // Check bounds first
       if (newX >= 0 && newX < boardWidth.value && 
-          newY >= 0 && newY < boardHeight.value &&
-          !isObstacle(newPos)) {
+          newY >= 0 && newY < boardHeight.value) {
+        
+        // Check if position is an obstacle (lakes, etc.)
+        if (isObstacle(newPos)) {
+          continue // Skip obstacle positions
+        }
+        
         const targetPiece = props.gameState.board[newY]?.[newX]
         
         // Can move to empty cell or attack enemy piece
@@ -284,10 +354,15 @@ const calculateValidMoves = (piece: Piece, from: Position): Position[] => {
         const newY = from.y + dir.dy * distance
         const newPos = { x: newX, y: newY }
         
+        // Check bounds
         if (newX < 0 || newX >= boardWidth.value || 
-            newY < 0 || newY >= boardHeight.value ||
-            isObstacle(newPos)) {
-          break // Out of bounds or blocked by obstacle
+            newY < 0 || newY >= boardHeight.value) {
+          break // Out of bounds
+        }
+        
+        // Check if position is an obstacle
+        if (isObstacle(newPos)) {
+          break // Blocked by obstacle
         }
 
         const targetPiece = props.gameState.board[newY]?.[newX]

@@ -185,12 +185,80 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 - [x] **Obstacle-System** (Lakes, Mountains, Walls etc.)
 - [x] **Player-Zone-System** (dynamische Setup-Bereiche)
 - [x] **Beispiel-Konfigurationen** (Classic Stratego, Mini, Chess-like)
-- [ ] State Machine Integration in Vue Components
-- [ ] Setup Phase UI für Piece-Platzierung
+- [x] **Player Store Implementation** (Pinia + localStorage synchronization)
+- [x] **Turn-based Setup Phase** (Red places first, then Blue)
+- [x] **Setup Phase UI** für Piece-Platzierung mit Turn Management
+- [x] **Visual Feedback** für Setup Progress und Player Status
+- [x] **WebSocket-based Multiplayer Synchronization**
+  - [x] Backend WebSocket server with room management
+  - [x] Frontend WebSocket service with reconnection logic
+  - [x] Real-time game state broadcasting between players
+  - [x] Player role assignment (RED host, BLUE guest)
+  - [x] State synchronization for piece placement and game transitions
+- [x] **State Machine Integration in Vue Components**
+  - [x] Auto setup functionality with complete piece placement
+  - [x] Setup to playing phase transition with START_GAME event
+  - [x] Playing phase UI with correct currentPlayer access from subState
+  - [x] Piece selection mechanics with SELECT_PIECE events
+  - [x] WebSocket synchronization during gameplay state changes
+- [x] **Move Validation System Integration**
+  - [x] Fix move calculation logic (identified inconsistent calculateValidMoves functions)
+  - [x] Fixed GameBoard and GameView calculateValidMoves functions for consistency
+  - [x] Proper obstacle checking and bounds validation implemented
+  - [x] Scout piece movement validation working correctly
+  - [x] State machine integration complete for piece selection events
+- [x] **Turn Confirmation System** (explicit "confirm turn" interaction)
+  - [x] UI for ending_turn state with countdown timer (3 seconds)
+  - [x] Confirm Turn button for immediate confirmation
+  - [x] Cancel Turn button (times out after 3 seconds if not used)
+  - [x] Automatic END_TURN event sending after timeout or confirmation
+  - [x] Proper cleanup of timers on component unmount
+  - [x] Fixed JavaScript initialization order error preventing proper function access
+  - [x] Successfully integrated turn confirmation into existing state machine architecture
+  - [x] Test complete move round-trip (red move → confirm → blue turn)
+  - [x] **PRIORITY: Implement turn-based UI restrictions for playing phase**
+    - [x] Disable piece selection when it's not the local player's turn
+    - [x] Add visual indicators for whose turn it is
+    - [x] Show waiting message when it's opponent's turn
+    - [x] Only allow interaction with own pieces during own turn
+    - [x] Added localPlayerRole prop to GameBoard component
+    - [x] Added turn validation in selectPiece function
+    - [x] Proper error logging for invalid turn attempts
+  - [x] **REGRESSION FIX: Duplicate turn confirmation issue**
+    - [x] Fixed watchEffect triggering multiple turn confirmations
+    - [x] Added check to prevent starting countdown if already running
+    - [x] Resolved WebSocket sync appearing broken (was actually working)
+    - [x] Fixed multiple END_TURN events being sent simultaneously
+  - [ ] Implement turn cancellation logic (revert move, return to piece_selected)
+  - [ ] Integrate combat resolution for piece attacks
 - [ ] Visual Feedback für Combat und Game Events
 
-**Phase 5-7: Weitere Phasen**
-- [ ] *Werden nach Abschluss der aktuellen Phase hinzugefügt*
+**Known Limitations (Accepted for Development):**
+- **Two-tab limitation**: Testing multiplayer requires separate browsers/devices in production
+- **Security**: Full game state visible to all players (security hardening planned for Phase 5)
+- **localStorage conflicts**: Expected behavior when testing in same browser
+
+**Phase 5: Multiplayer Security & Production Readiness (Future)**
+- [ ] **Authentication & Access Control**
+  - [ ] Token-based room access (host/guest tokens)
+  - [ ] Player session management and validation
+  - [ ] Prevent unauthorized room joining
+- [ ] **Server-Side State Filtering**
+  - [ ] Hide opponent piece details (type, rank) from game state
+  - [ ] Send player-specific filtered game states
+  - [ ] Implement "fog of war" for unrevealed pieces
+- [ ] **Security Hardening**
+  - [ ] Room expiration and cleanup
+  - [ ] Rate limiting for game actions
+  - [ ] Reconnection with token validation
+  - [ ] Prevent room hijacking and cheating
+- [ ] **Production Features**
+  - [ ] Spectator mode with limited visibility
+  - [ ] Game replay and history
+  - [ ] Optional user accounts integration
+
+**Phase 6-7: Advanced Features (Future)**
+- [ ] *To be defined based on user feedback and requirements*
 
 ### Completed
 - [x] Frontend-Projekt erfolgreich initialisiert mit Vue 3 + Vite + TypeScript + Vitest
@@ -207,6 +275,17 @@ Entwicklung eines konfigurierbaren, browser-basierten Strategiespiels, bei dem B
 - [x] MovementValidator mit allen Stratego-Bewegungsregeln
 - [x] GameEndAnalyzer für saubere Trennung von Combat und Spielende
 - [x] Umfassende Dokumentation in Architecture.md aktualisiert
+- [x] **Complete UI Integration with State Machine**
+  - [x] Auto setup functionality: Places all 80 pieces automatically with state machine events
+  - [x] Setup to playing phase transition: START_GAME event works correctly
+  - [x] Playing phase UI: Fixed currentPlayer access from gameState.subState.currentPlayer
+  - [x] Piece selection: SELECT_PIECE events work with state transitions
+  - [x] WebSocket synchronization: Real-time state broadcasting during gameplay
+  - [x] State machine integration: All phase transitions working correctly
+
+**Current Status**: Game successfully transitions from setup to playing phase. Auto setup works perfectly. **Critical Issue Identified**: Move validation system returns `validMoves: Array(0)` for all pieces, preventing actual gameplay. Empty cell clicks trigger DESELECT_PIECE instead of MOVE_PIECE events.
+
+**Next Priority**: Fix move validation logic in MovementValidator to properly calculate valid moves for pieces, enabling actual piece movement and turn transitions.
 
 ## Document
 

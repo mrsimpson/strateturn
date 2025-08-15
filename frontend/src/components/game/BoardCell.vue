@@ -9,7 +9,7 @@
       v-if="piece" 
       :piece="piece"
       :piece-config="pieceConfig"
-      :is-revealed="piece.isRevealed"
+      :is-revealed="shouldRevealPiece"
       :is-selected="isSelected"
     />
     
@@ -73,6 +73,8 @@ interface Props {
   isValidMove?: boolean
   isHighlighted?: boolean
   showCoordinates?: boolean
+  currentPlayer?: string  // Add current player to determine visibility
+  gamePhase?: string      // Add game phase to determine visibility
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -81,6 +83,8 @@ const props = withDefaults(defineProps<Props>(), {
   isValidMove: false,
   isHighlighted: false,
   showCoordinates: false,
+  currentPlayer: '',
+  gamePhase: 'setup',
   pieceConfig: () => ({
     symbols: {},
     hiddenSymbols: { red: '🔴', blue: '🔵' }
@@ -92,6 +96,20 @@ const emit = defineEmits<{
 }>()
 
 // Computed properties
+const shouldRevealPiece = computed(() => {
+  if (!props.piece) return false
+  
+  // Always reveal pieces that are already revealed
+  if (props.piece.isRevealed) return true
+  
+  // During setup phase, reveal own pieces
+  if (props.gamePhase === 'setup' && props.piece.player === props.currentPlayer) {
+    return true
+  }
+  
+  // During playing phase, only show revealed pieces
+  return props.piece.isRevealed
+})
 const cellClasses = computed(() => ({
   'cell-selected': props.isSelected,
   'cell-valid-move': props.isValidMove,
@@ -145,9 +163,17 @@ const playerZoneClasses = computed(() => {
 
 // Methods
 const handleClick = () => {
-  if (!obstacleInfo.value && (props.isValidMove || props.piece)) {
-    emit('click', props.position)
+  console.log('BoardCell clicked:', props.position, 'obstacle:', !!obstacleInfo.value)
+  
+  // Don't allow clicks on obstacles
+  if (obstacleInfo.value) {
+    console.log('Click blocked: obstacle')
+    return
   }
+  
+  // Allow all clicks on non-obstacle cells
+  console.log('Emitting click event for position:', props.position)
+  emit('click', props.position)
 }
 </script>
 
@@ -246,18 +272,22 @@ export default {
 /* Player Zones - Dynamic based on configuration */
 .cell-red-zone {
   background-color: #fef2f2;
+  border-color: #fca5a5;
 }
 
 .cell-blue-zone {
   background-color: #eff6ff;
+  border-color: #93c5fd;
 }
 
 .cell-green-zone {
   background-color: #f0fdf4;
+  border-color: #86efac;
 }
 
 .cell-yellow-zone {
   background-color: #fefce8;
+  border-color: #fde047;
 }
 
 /* Move Indicator */

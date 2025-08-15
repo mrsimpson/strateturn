@@ -97,4 +97,5 @@ const joinGame = () => {
   if (roomCode.value.trim()) {
     router.push(`/game/${roomCode.value.trim().toUpperCase()}`)
   }
-}</script>
+}
+</script>

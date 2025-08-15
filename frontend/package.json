@@ -19,6 +19,7 @@
   "dependencies": {
     "@isomorphic-git/lightning-fs": "4.6.2",
     "@mdi/js": "7.4.47",
+    "@vueuse/core": "13.6.0",
     "isomorphic-git": "1.32.3",
     "pinia": "^3.0.3",
     "simple-peer": "9.11.1",

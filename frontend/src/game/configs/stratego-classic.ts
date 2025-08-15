@@ -21,6 +21,21 @@ export const strategoClassicConfig = {
 
   // Piece Configuration
   pieces: {
+    // Piece types with counts and properties
+    types: [
+      { name: 'Marshal', rank: 10, movement: 1, count: 1 },
+      { name: 'General', rank: 9, movement: 1, count: 1 },
+      { name: 'Colonel', rank: 8, movement: 1, count: 2 },
+      { name: 'Major', rank: 7, movement: 1, count: 3 },
+      { name: 'Captain', rank: 6, movement: 1, count: 4 },
+      { name: 'Lieutenant', rank: 5, movement: 1, count: 4 },
+      { name: 'Sergeant', rank: 4, movement: 1, count: 4 },
+      { name: 'Miner', rank: 3, movement: 1, count: 5 },
+      { name: 'Scout', rank: 2, movement: 'unlimited', count: 8 },
+      { name: 'Spy', rank: 1, movement: 1, count: 1 },
+      { name: 'Bomb', rank: 11, movement: 0, count: 6 },
+      { name: 'Flag', rank: 0, movement: 0, count: 1 }
+    ],
     symbols: {
       // High-ranking pieces
       'Marshal': '👑',
