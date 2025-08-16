@@ -136,8 +136,6 @@ export class GameStateMachine {
         return this.handlePieceSelectedTransition(state, event)
       case 'moving_piece':
         return this.handleMovingPieceTransition(state, event)
-      case 'combat_resolution':
-        return this.handleCombatResolutionTransition(state, event)
       case 'ending_turn':
         return this.handleEndingTurnTransition(state, event)
       default:
@@ -272,8 +270,6 @@ export class GameStateMachine {
    */
   private handleMovingPieceTransition(state: PlayingState, event: GameEvent): GameState | null {
     switch (event.type) {
-      case 'RESOLVE_COMBAT':
-        return this.handleResolveCombat(state, event)
       case 'END_TURN':
         return this.handleEndTurn(state, event)
       default:
@@ -281,19 +277,6 @@ export class GameStateMachine {
     }
   }
 
-  /**
-   * Playing phase: Resolving combat
-   */
-  private handleCombatResolutionTransition(state: PlayingState, event: GameEvent): GameState | null {
-    switch (event.type) {
-      case 'END_TURN':
-        return this.handleEndTurn(state, event)
-      case 'END_GAME':
-        return this.handleEndGame(state, event)
-      default:
-        return null
-    }
-  }
 
   /**
    * Playing phase: Ending turn
@@ -358,16 +341,32 @@ export class GameStateMachine {
     newBoard[event.from.y][event.from.x] = null
 
     if (event.targetPiece) {
-      // Combat will occur - don't place piece yet
+      // Combat will occur - resolve it immediately
+      const combatResult = this.combatResolver.resolveCombat(movingPiece, event.targetPiece)
+      
+      if (combatResult.bothDestroyed) {
+        // Both pieces destroyed - target position remains empty
+        newBoard[event.to.y][event.to.x] = null
+      } else if (combatResult.winner) {
+        // Winner takes the position
+        newBoard[event.to.y][event.to.x] = {
+          ...combatResult.winner,
+          position: event.to,
+          isRevealed: true
+        }
+      }
+
+      // Update captured pieces
+      const newCapturedPieces = this.combatResolver.processCombatResult(combatResult, state.capturedPieces)
+
       return {
         ...state,
+        board: newBoard,
+        capturedPieces: newCapturedPieces,
         subState: {
-          type: 'combat_resolution',
+          type: 'ending_turn',
           currentPlayer: subState.currentPlayer,
-          attacker: movingPiece,
-          defender: event.targetPiece,
-          attackerPosition: event.from,
-          defenderPosition: event.to
+          nextPlayer: subState.currentPlayer === 'red' ? 'blue' : 'red'
         }
       }
     } else {
@@ -389,39 +388,6 @@ export class GameStateMachine {
   /**
    * Resolve combat action
    */
-  private handleResolveCombat(state: PlayingState, event: ResolveCombatEvent): GameState | null {
-    const subState = state.subState as CombatResolutionState
-    const result = event.result
-
-    // Create new board with combat result applied
-    const newBoard = state.board.map(row => [...row])
-
-    if (result.bothDestroyed) {
-      // Both pieces destroyed
-      newBoard[subState.defenderPosition.y][subState.defenderPosition.x] = null
-    } else if (result.winner) {
-      // Winner takes the position
-      newBoard[subState.defenderPosition.y][subState.defenderPosition.x] = {
-        ...result.winner,
-        position: subState.defenderPosition,
-        isRevealed: true
-      }
-    }
-
-    // Update captured pieces
-    const newCapturedPieces = this.combatResolver.processCombatResult(result, state.capturedPieces)
-
-    return {
-      ...state,
-      board: newBoard,
-      capturedPieces: newCapturedPieces,
-      subState: {
-        type: 'ending_turn',
-        currentPlayer: subState.currentPlayer,
-        nextPlayer: subState.currentPlayer === 'red' ? 'blue' : 'red'
-      }
-    }
-  }
 
   /**
    * End turn action - properly implement turn ending logic

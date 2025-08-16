@@ -52,11 +52,11 @@ describe('Player Store', () => {
       store.initializePlayer('room789', false)
       
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'strateturn-player-room789',
+        'strateturn-room-room789-player',
         expect.stringContaining('"role":"red"')
       )
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'strateturn-player-room789',
+        'strateturn-room-room789-player',
         expect.stringContaining('"isHost":true')
       )
     })
@@ -91,7 +91,7 @@ describe('Player Store', () => {
       expect(store.playerRole).toBe('blue')
       expect(store.isHost).toBe(false)
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'strateturn-player-room111',
+        'strateturn-room-room111-player',
         expect.stringContaining('"role":"blue"')
       )
     })
@@ -106,7 +106,7 @@ describe('Player Store', () => {
       expect(store.playerRole).toBe('red')
       expect(store.isHost).toBe(true)
       expect(store.playerId).toBe('')
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('strateturn-player-room222')
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith('strateturn-room-room222-player')
     })
 
     it('should return correct player info', () => {
@@ -169,7 +169,7 @@ describe('Player Store', () => {
       
       store.clearStorageData()
       
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('strateturn-player-room777')
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith('strateturn-room-room777-player')
     })
   })
 })

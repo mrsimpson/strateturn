@@ -36,44 +36,24 @@ export const usePlayerStore = defineStore('player', () => {
     const roomStorageKey = `strateturn-room-${roomId}-player`
     const playerIdKey = `strateturn-player-id`
     
-    // Get or create a persistent player ID (across all rooms)
-    let persistentPlayerId = localStorage.getItem(playerIdKey)
-    if (!persistentPlayerId) {
-      persistentPlayerId = generatePlayerId()
-      localStorage.setItem(playerIdKey, persistentPlayerId)
-    }
-    
     // Check if this specific player has been in this room before
     const existingRoomData = localStorage.getItem(roomStorageKey)
     
     if (existingRoomData) {
-      // This player has been in this room before
+      // Room has existing player data - restore it
       const data = JSON.parse(existingRoomData)
-      if (data.playerId === persistentPlayerId) {
-        // Same player returning to same room
-        playerRole.value = data.role
-        isHost.value = data.isHost
-        playerId.value = data.playerId
-        console.log('Returning player to same room:', data)
-      } else {
-        // Different player in same room - assign opposite role
-        const existingRole = data.role
-        playerRole.value = existingRole === 'red' ? 'blue' : 'red'
-        isHost.value = !data.isHost
-        playerId.value = persistentPlayerId
-        
-        // Update storage with new player data
-        const newPlayerData = {
-          role: playerRole.value,
-          isHost: isHost.value,
-          playerId: playerId.value,
-          roomId: roomId,
-          joinedAt: Date.now()
-        }
-        localStorage.setItem(roomStorageKey, JSON.stringify(newPlayerData))
-        console.log('New player joining existing room:', newPlayerData)
-      }
+      playerRole.value = data.role
+      isHost.value = data.isHost
+      playerId.value = data.playerId
+      console.log('Returning player to same room:', data)
     } else {
+      // Get or create a persistent player ID (across all rooms)
+      let persistentPlayerId = localStorage.getItem(playerIdKey)
+      if (!persistentPlayerId) {
+        persistentPlayerId = generatePlayerId()
+        localStorage.setItem(playerIdKey, persistentPlayerId)
+      }
+      
       // First player in this room
       playerRole.value = isJoining ? 'blue' : 'red'
       isHost.value = !isJoining
@@ -107,7 +87,7 @@ export const usePlayerStore = defineStore('player', () => {
     
     // Update localStorage
     if (currentRoomId.value) {
-      const storageKey = `strateturn-player-${currentRoomId.value}`
+      const storageKey = `strateturn-room-${currentRoomId.value}-player`
       const existingData = JSON.parse(localStorage.getItem(storageKey) || '{}')
       const updatedData = {
         ...existingData,
@@ -121,7 +101,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   const leaveRoom = () => {
     if (currentRoomId.value) {
-      const storageKey = `strateturn-player-${currentRoomId.value}`
+      const storageKey = `strateturn-room-${currentRoomId.value}-player`
       localStorage.removeItem(storageKey)
     }
     
@@ -150,14 +130,14 @@ export const usePlayerStore = defineStore('player', () => {
   // Debug helpers
   const getStorageData = () => {
     if (!currentRoomId.value) return null
-    const storageKey = `strateturn-player-${currentRoomId.value}`
+    const storageKey = `strateturn-room-${currentRoomId.value}-player`
     const data = localStorage.getItem(storageKey)
     return data ? JSON.parse(data) : null
   }
 
   const clearStorageData = () => {
     if (!currentRoomId.value) return
-    const storageKey = `strateturn-player-${currentRoomId.value}`
+    const storageKey = `strateturn-room-${currentRoomId.value}-player`
     localStorage.removeItem(storageKey)
   }
 
