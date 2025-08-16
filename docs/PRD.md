@@ -1,137 +1,149 @@
 # Strateturn - Product Requirements Document
 
 ## Vision
-Ein konfigurierbares, browser-basiertes Strategiespiel, das Familien, Freunden und Lehrern ermöglicht, thematische Varianten von Stratego-ähnlichen Spielen zu spielen.
+A configurable, browser-based strategy game that enables families, friends, and educators to play thematic variants of Stratego-like games through real-time multiplayer gameplay.
 
-## Zielgruppe
-- **Primär**: Familien/Freunde für gemeinsame Spielzeit
-- **Sekundär**: Lehrer/Schüler für thematische Lernspiele
-- **Nicht**: Militär-/Stratego-Enthusiasten
+## Target Audience
+- **Primary**: Families and friends seeking engaging multiplayer games
+- **Secondary**: Educators using games for thematic learning experiences
+- **Tertiary**: Strategy game enthusiasts exploring new variants
 
 ## Success Metrics
-- Anzahl gespielter Spiele
-- Wiederkehrende Nutzer
+- Number of games played per month
+- Player retention rate (returning users)
+- Average game session duration
+- Room creation to completion rate
 
-## Core Features v1
+## Core Features
 
-### 1. Deklarative YAML-Konfiguration
-- Vollständig konfigurierbare Spielregeln via YAML
-- Brettgröße, Figurenanzahl, Ränge, Kampf- und Bewegungsregeln
-- Numerische Ränge mit benutzerdefinierten Namen pro Partei
+### 🎮 **Game Mechanics**
+- **10x10 strategic board** with coordinate-based movement system
+- **Turn-based gameplay** with piece selection and movement phases
+- **Combat resolution** based on piece strength and special rules
+- **Victory conditions** through piece capture and strategic positioning
 
-### 2. Vorgefertigte Spielvarianten
-- **Klassisches Stratego**: 10x10 Brett, 40 Figuren pro Spieler
-- **Mini-Stratego**: 8x8 Brett, 24 Figuren pro Spieler
+### 🌐 **Multiplayer System**
+- **Room-based gameplay** with unique room IDs for matchmaking
+- **WebRTC P2P communication** for low-latency game data exchange
+- **WebSocket signaling** for initial connection establishment
+- **Automatic reconnection** handling network interruptions
 
-### 3. P2P-Verbindung
-- WebRTC-basierte Peer-to-Peer-Kommunikation
-- Link-basiertes Matchmaking mit Einmal-Links
-- Spieler 1 erstellt Raum und teilt Link mit Spieler 2
+### 🎯 **User Experience**
+- **Intuitive game interface** with drag-and-drop or click-to-move
+- **Real-time state synchronization** between players
+- **Visual feedback** for valid moves, selected pieces, and game status
+- **Responsive design** working across desktop and mobile browsers
 
-### 4. Git-basierte Synchronisation
-- Merkle-Tree/Git-Ansatz für Tamper-Evidence
-- Nur Commits (keine Branches/Merges)
-- Fast-Forward-Merges für Synchronisation
-- Einseitiger Reset bei Konflikten
-- Local-First mit Browser-Persistierung
+### 🔧 **Technical Features**
+- **Type-safe development** with comprehensive TypeScript integration
+- **Reactive state management** using Vue 3 and Pinia
+- **Local state persistence** for game continuity across sessions
+- **Error handling and recovery** for robust gameplay experience
 
-### 5. Benutzerfreundliches Interface
-- Click-to-Select/Click-to-Move (kein Drag&Drop)
-- Gleichzeitige Aufstellungsphase beider Spieler
-- Überschreiben sendet Figur zurück in Vorrat
-- Keine Bestätigung bei Zügen erforderlich
+## User Stories
 
-### 6. Cross-Browser-Kompatibilität
-- Alle modernen Browser (Chrome, Firefox, Safari, Edge)
-- Mobile Browser unterstützt (aber keine Mobile-Optimierung v1)
+### **Player Onboarding**
+- As a new player, I want to quickly understand how to start a game
+- As a player, I want to easily share a game room with my friend
+- As a player, I want the game to work reliably in my browser
 
-## Spielmechaniken
+### **Gameplay Experience**
+- As a player, I want to see valid moves when I select a piece
+- As a player, I want immediate feedback when I make a move
+- As a player, I want the game to continue if my connection drops briefly
+- As a player, I want to know when it's my turn to play
 
-### Kampfsystem
-- **Rangbasiert**: Höherer Rang schlägt niedrigeren
-- **Gleicher Rang**: Beide Figuren sterben
-- **Spezialregeln** (konfigurierbar pro Figur):
-  - `defeats_additionally`: Schlägt zusätzlich spezifische Figuren (Spion vs. Marschall)
-  - `defeats_all_except`: Schlägt alle außer spezifischen Figuren (Bombe vs. Mineur)
+### **Game Management**
+- As a player, I want to start a new game easily
+- As a player, I want to leave a game gracefully
+- As a player, I want to understand the current game state at all times
 
-### Bewegungsregeln
-- **Standard**: 1 Feld pro Zug
-- **Aufklärer**: Unbegrenzte Bewegung in gerader Linie
-- **Unbewegliche**: Bomben und Fahne (movement: 0)
+## Technical Requirements
 
-### Spielende
-- **Siegbedingung**: Nur "Capture the Flag"
-- **Unentschieden**: Möglich wenn keine beweglichen Figuren mehr vorhanden
-- **Aufgabe**: Einseitige Aufgabe möglich
+### **Performance**
+- Game state updates should be reflected within 100ms
+- Initial page load should complete within 2 seconds
+- P2P connection establishment should complete within 5 seconds
 
-### Validierung
-- System verhindert ungültige Züge komplett
-- Keine Timeouts - Spieler regeln außerhalb der Plattform
+### **Compatibility**
+- Support modern browsers with WebRTC capability
+- Responsive design for desktop and tablet devices
+- Graceful degradation for older browser versions
 
-## YAML-Konfigurationsschema
+### **Reliability**
+- Handle network interruptions with automatic reconnection
+- Maintain game state consistency between players
+- Provide clear error messages for connection issues
 
-```yaml
-game:
-  name: "Klassisches Stratego"
-  board:
-    width: 10
-    height: 10
-    obstacles: 
-      - {x: 2, y: 4, width: 2, height: 2, type: "lake"}
-      - {x: 6, y: 4, width: 2, height: 2, type: "lake"}
-  
-  players:
-    - name: "Rot"
-      pieces:
-        - rank: 10, name: "Marschall", count: 1, movement: 1
-        - rank: 9, name: "General", count: 1, movement: 1
-        - rank: 8, name: "Oberst", count: 2, movement: 1
-        - rank: 7, name: "Major", count: 3, movement: 1
-        - rank: 6, name: "Hauptmann", count: 4, movement: 1
-        - rank: 5, name: "Leutnant", count: 4, movement: 1
-        - rank: 4, name: "Feldwebel", count: 4, movement: 1
-        - rank: 3, name: "Mineur", count: 5, movement: 1
-        - rank: 2, name: "Aufklärer", count: 8, movement: "unlimited"
-        - rank: 1, name: "Spion", count: 1, movement: 1
-        - rank: 0, name: "Bombe", count: 6, movement: 0
-        - rank: -1, name: "Fahne", count: 1, movement: 0
-    - name: "Blau" 
-      pieces:
-        # ... (identische Struktur)
+### **Security**
+- Validate all game moves on both client and server side
+- Prevent cheating through client-side manipulation
+- Secure WebSocket and WebRTC communications
 
-  combat_rules:
-    - piece: "Spion", defeats_additionally: ["Marschall"]
-    - piece: "Mineur", defeats_additionally: ["Bombe"]
-    - piece: "Bombe", defeats_all_except: ["Mineur"]
-    - piece: "Fahne", defeats_all_except: []  # wird von allen geschlagen
-```
+## Development Priorities
 
-## Technical Approach
+### **Phase 1: Core Gameplay** ✅
+- Basic game mechanics and rules implementation
+- WebSocket signaling server for room management
+- WebRTC P2P connection for game data
+- Vue 3 frontend with reactive state management
 
-### Architecture Principles
-- **Local-First**: Spielstand immer browser-lokal gepuffert
-- **P2P-First**: Direkte Kommunikation zwischen Clients
-- **Git-Inspired**: Versionierung und Synchronisation wie in Git
-- **Declarative**: Komplette Spiellogik über YAML konfigurierbar
+### **Phase 2: Enhanced Experience**
+- Improved UI/UX with better visual feedback
+- Mobile responsiveness and touch interactions
+- Game replay and spectator mode
+- Performance optimizations
 
-### Reconnect-Mechanismus
-- Re-Join mit existierendem Link übernimmt Spielstand vom Gegner
-- Lokale Persistierung als Fallback
-- Fast-Forward-Merge bei Wiederverbindung
+### **Phase 3: Advanced Features**
+- Configurable game variants and themes
+- Tournament mode and multiple game sessions
+- Social features and player statistics
+- AI opponents for single-player mode
 
-## Out of Scope v1
-- Nutzer-erstellte Konfigurationen
-- Grafischer Konfigurationseditor
-- KI-Gegner
-- Turniere/Ligen
-- Tutorials
-- In-Game-Chat
-- Mobile-Optimierung
-- Mehrspielerspiele (>2 Spieler)
+## Success Criteria
 
-## Future Considerations
-- **v2**: Grafischer YAML-Editor
-- **v3**: Community-Sharing von Konfigurationen
-- **v4**: Thematische Templates (Harry Potter, Minecraft, etc.)
-- **v5**: Mobile-optimierte UI
-- **v6**: Erweiterte Spielmodi und Turniere
+### **Minimum Viable Product (MVP)**
+- Two players can successfully complete a full game
+- Connection recovery works for brief network interruptions
+- Game rules are correctly enforced
+- Basic UI provides necessary game information
+
+### **Product-Market Fit**
+- 70% of started games are completed
+- Average session duration exceeds 15 minutes
+- 40% of players return for additional games
+- Less than 5% of games fail due to technical issues
+
+## Non-Goals
+
+### **Out of Scope for v1**
+- Single-player campaign mode
+- Advanced AI opponents
+- Mobile native applications
+- Monetization features
+- User accounts and profiles
+- Game statistics and leaderboards
+
+### **Technical Limitations**
+- No support for more than 2 players per game
+- No persistent game state across browser sessions
+- No server-side game state validation (P2P trust model)
+- No support for custom piece graphics upload
+
+## Risk Mitigation
+
+### **Technical Risks**
+- **WebRTC compatibility**: Provide fallback communication methods
+- **Network reliability**: Implement robust reconnection logic
+- **State synchronization**: Use Git-inspired conflict resolution
+- **Browser limitations**: Test across major browser versions
+
+### **Product Risks**
+- **User adoption**: Focus on simple, intuitive gameplay
+- **Game balance**: Implement well-tested game rules
+- **Performance**: Optimize for smooth real-time interactions
+- **Accessibility**: Ensure game is playable by diverse users
+
+---
+
+*This PRD guides development priorities and feature decisions. For technical implementation details, see [Architecture Guide](./ARCHITECTURE.md).*
