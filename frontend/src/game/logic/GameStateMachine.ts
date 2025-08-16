@@ -359,6 +359,40 @@ export class GameStateMachine {
       // Update captured pieces
       const newCapturedPieces = this.combatResolver.processCombatResult(combatResult, state.capturedPieces)
 
+      // Check for game end conditions immediately after combat (especially flag capture)
+      const gameEndResult = this.gameEndAnalyzer.checkGameEnd({
+        board: newBoard,
+        currentPlayer: subState.currentPlayer,
+        turn: state.turn,
+        capturedPieces: newCapturedPieces,
+        gamePhase: 'playing',
+        redPiecesPlaced: 40,
+        bluePiecesPlaced: 40
+      })
+
+      if (gameEndResult.gameEnded) {
+        // Send END_GAME event to properly transition through state machine
+        const endGameEvent: GameEvent = {
+          type: 'END_GAME',
+          result: gameEndResult
+        }
+        
+        // Create intermediate state first, then send END_GAME event
+        const intermediateState = {
+          ...state,
+          board: newBoard,
+          capturedPieces: newCapturedPieces,
+          subState: {
+            type: 'ending_turn' as const,
+            currentPlayer: subState.currentPlayer,
+            nextPlayer: subState.currentPlayer === 'red' ? 'blue' as const : 'red' as const
+          }
+        }
+        
+        // Process END_GAME event through proper state machine flow
+        return this.handleEndGame(intermediateState, endGameEvent)
+      }
+
       return {
         ...state,
         board: newBoard,
